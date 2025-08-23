@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artistic Digital Nameplate Creator</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Cursive font for name -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- pages container is placed at body level so pages cover the whole viewport -->
+  <div id="pagesContainer" class="pages-container" aria-label="Background pages">
+    <!-- PDF pages will be rendered into canvases here -->
+  </div>
+
+  <div class="container">
+    <h1>Digital Nameplate Creator</h1>
+
+    <div class="hint center-hint">Scroll up / down to pick a background</div>
+  </div>
+
+  <!-- fixed centered frame overlay (stays while backgrounds scroll) -->
+  <div class="fixed-frame" aria-hidden="true">
+    <img class="frame" src="trans.png" alt="frame" />
+    <div class="frame-name" id="frameName">Your Name</div>
+  </div>
+
+  <!-- fixed bottom controls -->
+  <div class="bottom-controls">
+    <input type="text" id="nameInput" placeholder="Enter your name..." maxlength="32" />
+    <button id="downloadBtn">Download Current Nameplate</button>
+  </div>
+
+  <!-- PDF.js from CDNJS (more widely mirrored) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <script>
+    // Configure workerSrc for PDF.js
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    }
+  </script>
+  <div id="errorBanner" aria-live="polite" style="display:none;position:fixed;left:16px;right:16px;top:16px;padding:12px 16px;border-radius:8px;background:rgba(255,80,80,0.12);color:#800;z-index:9999;text-align:center;font-weight:600;">PDF load error</div>
+  <script src="script.js"></script>
+</body>
+</html>

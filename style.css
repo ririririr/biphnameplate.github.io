@@ -1,0 +1,171 @@
+.body-bg {
+  background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body{
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  min-height:100vh;
+  overflow: hidden; /* body does not scroll; pages-container will */
+}
+
+.container {
+  background: transparent; /* removed white box so pages are visible behind overlay */
+  border-radius: 0;
+  padding: 18px 12px 6px 12px;
+  max-width: 980px;
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+}
+
+h1 {
+  font-size: 2.2rem;
+  margin-bottom: 1.2rem;
+  letter-spacing: 2px;
+  color: #333;
+}
+
+.controls {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+input[type="text"] {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+input[type="text"]:focus {
+  border: 1.5px solid #fda085;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #fda085;
+}
+
+.preview-wrapper {
+  margin: 1.2rem 0 1.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Horizontal pages container (PDF pages) */
+
+/* Vertical full-page scroller */
+.pages-container {
+  display: block;
+  width: 100%;
+  z-index: 1; /* behind overlays */
+  height: 100vh;
+  overflow-y: auto; /* use container scroll so we can contain overscroll */
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain; /* prevent rubber-band blank space */
+}
+
+.pages-container::-webkit-scrollbar{width:10px}
+.pages-container::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:6px}
+
+.page-item {
+  scroll-snap-align: start;
+  position: relative;
+  min-height: 100vh; /* full viewport height so each background fills the page */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.page-item canvas {
+  display: block;
+  width: 100vw; /* fill viewport width */
+  height: 100vh; /* fill viewport height */
+  object-fit: cover;
+}
+
+/* Overlay frame (trans.png) and centered name */
+.fixed-frame {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 40;
+}
+.fixed-frame img.frame {
+  width: 56%;
+  max-width: 800px;
+  display: block;
+}
+.fixed-frame .frame-name {
+  position: absolute;
+  font-weight: 800;
+  font-size: 3rem;
+  color: #fff;
+  text-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  pointer-events: none;
+  text-align: center;
+  max-width: 60%;
+}
+
+/* apply the cursive font only to the displayed name inside the fixed frame */
+.fixed-frame .frame-name {
+  font-family: 'Great Vibes', cursive;
+  font-weight: 400;
+  letter-spacing: 0.6px;
+}
+
+/* bottom fixed controls */
+.bottom-controls {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 18px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: rgba(255,255,255,0.9);
+  padding: 10px 14px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 50;
+}
+.bottom-controls input[type="text"]{
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  min-width: 260px;
+}
+.center-hint{ text-align:center; margin-bottom:8px; color:#eee; text-shadow:0 2px 6px rgba(0,0,0,0.3) }
+
+button#downloadBtn {
+  background: linear-gradient(90deg, #f6d365 0%, #fda085 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 2.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(253,160,133,0.12);
+  transition: background 0.2s, transform 0.1s;
+}
+button#downloadBtn:hover {
+  background: linear-gradient(90deg, #fda085 0%, #f6d365 100%);
+  transform: translateY(-2px) scale(1.03);
+}
