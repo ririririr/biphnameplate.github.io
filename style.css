@@ -1,20 +1,60 @@
-.body-bg {
-  background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+/* CSS Custom Properties for Dynamic Theming */
+:root {
+  /* Default theme properties */
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --accent-color: #e74c3c;
+  --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --background-pattern: none;
+  --text-color: #ffffff;
+  --text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --frame-border: 2px solid var(--primary-color);
+  --frame-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --font-family: 'Great Vibes', cursive;
+  --animation-glow: default-glow 2s ease-in-out infinite alternate;
+  
+  /* Animation timing */
+  --transition-fast: 0.2s;
+  --transition-medium: 0.5s;
+  --transition-slow: 1s;
+}
+
+/* Theme transition class */
+.theme-transitioning * {
+  transition: all var(--transition-medium) ease-in-out !important;
 }
 
 html, body {
   height: 100%;
   margin: 0;
+  padding: 0;
 }
 
-body{
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  min-height:100vh;
-  overflow: hidden; /* body does not scroll; pages-container will */
+body {
+  font-family: var(--font-family);
+  min-height: 100vh;
+  overflow: hidden;
+  background: var(--background-gradient);
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Background pattern overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background-pattern);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .container {
-  background: transparent; /* removed white box so pages are visible behind overlay */
+  background: transparent;
   border-radius: 0;
   padding: 18px 12px 6px 12px;
   max-width: 980px;
@@ -29,7 +69,10 @@ h1 {
   font-size: 2.2rem;
   margin-bottom: 1.2rem;
   letter-spacing: 2px;
-  color: #333;
+  color: var(--text-color);
+  text-shadow: var(--text-shadow);
+  font-family: var(--font-family);
+  animation: text-entrance 1s ease-out;
 }
 
 .controls {
@@ -62,42 +105,9 @@ input[type="range"] {
   justify-content: center;
 }
 
-/* Horizontal pages container (PDF pages) */
+/* Enhanced container styles */
 
-/* Vertical full-page scroller */
-.pages-container {
-  display: block;
-  width: 100%;
-  z-index: 1; /* behind overlays */
-  height: 100vh;
-  overflow-y: auto; /* use container scroll so we can contain overscroll */
-  scroll-snap-type: y mandatory;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain; /* prevent rubber-band blank space */
-}
-
-.pages-container::-webkit-scrollbar{width:10px}
-.pages-container::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.12);border-radius:6px}
-
-.page-item {
-  scroll-snap-align: start;
-  position: relative;
-  min-height: 100vh; /* full viewport height so each background fills the page */
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.page-item canvas {
-  display: block;
-  width: 100vw; /* fill viewport width */
-  height: 100vh; /* fill viewport height */
-  object-fit: cover;
-}
-
-/* Overlay frame (trans.png) and centered name */
+/* Enhanced frame with theme support */
 .fixed-frame {
   position: fixed;
   inset: 0;
@@ -106,28 +116,74 @@ input[type="range"] {
   justify-content: center;
   pointer-events: none;
   z-index: 40;
-}
-.fixed-frame img.frame {
-  width: 56%;
-  max-width: 800px;
-  display: block;
-}
-.fixed-frame .frame-name {
-  position: absolute;
-  font-weight: 800;
-  font-size: 3rem;
-  color: #fff;
-  text-shadow: 0 6px 20px rgba(0,0,0,0.6);
-  pointer-events: none;
-  text-align: center;
-  max-width: 60%;
+  transform-style: preserve-3d;
 }
 
-/* apply the cursive font only to the displayed name inside the fixed frame */
+.fixed-frame .frame-container {
+  position: relative;
+  width: 56%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+  border: var(--frame-border);
+  border-radius: 20px;
+  box-shadow: var(--frame-shadow);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: transform var(--transition-medium) ease-out;
+  animation: var(--animation-glow);
+}
+
+.fixed-frame .frame-container:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(5deg) scale(1.02);
+}
+
 .fixed-frame .frame-name {
-  font-family: 'Great Vibes', cursive;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-family);
   font-weight: 400;
-  letter-spacing: 0.6px;
+  font-size: clamp(2rem, 5vw, 4rem);
+  color: var(--text-color);
+  text-shadow: var(--text-shadow);
+  pointer-events: none;
+  text-align: center;
+  max-width: 90%;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  animation: text-entrance 1s ease-out;
+}
+
+/* Theme-specific frame styles */
+.theme-neon-cyber .fixed-frame .frame-container {
+  background: rgba(0, 255, 255, 0.05);
+  border-image: linear-gradient(45deg, var(--primary-color), var(--secondary-color)) 1;
+}
+
+.theme-nature-organic .fixed-frame .frame-container {
+  border-radius: 50px;
+  background: rgba(45, 80, 22, 0.1);
+}
+
+.theme-minimalist-modern .fixed-frame .frame-container {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+}
+
+.theme-retro-gaming .fixed-frame .frame-container {
+  border-radius: 0;
+  background: rgba(255, 107, 53, 0.1);
+  image-rendering: pixelated;
+}
+
+.theme-holographic .fixed-frame .frame-container {
+  background: linear-gradient(45deg, rgba(196, 113, 237, 0.1), rgba(18, 194, 233, 0.1));
+  border-image: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color)) 1;
 }
 
 /* bottom fixed controls */
@@ -151,7 +207,14 @@ input[type="range"] {
   border: 1px solid #ddd;
   min-width: 260px;
 }
-.center-hint{ text-align:center; margin-bottom:8px; color:#eee; text-shadow:0 2px 6px rgba(0,0,0,0.3) }
+.center-hint { 
+  text-align: center; 
+  margin-bottom: 8px; 
+  color: var(--text-color); 
+  text-shadow: var(--text-shadow);
+  font-size: 1.1rem;
+  animation: text-entrance 1.2s ease-out;
+}
 
 button#downloadBtn {
   background: linear-gradient(90deg, #f6d365 0%, #fda085 100%);
@@ -168,4 +231,379 @@ button#downloadBtn {
 button#downloadBtn:hover {
   background: linear-gradient(90deg, #fda085 0%, #f6d365 100%);
   transform: translateY(-2px) scale(1.03);
+}
+
+/* ===== ANIMATIONS AND KEYFRAMES ===== */
+
+/* Default animations */
+@keyframes default-glow {
+  0% { box-shadow: var(--frame-shadow); }
+  100% { box-shadow: var(--frame-shadow), 0 0 40px rgba(52, 152, 219, 0.3); }
+}
+
+@keyframes text-entrance {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8) rotateY(90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+  }
+}
+
+/* Neon Cyber Theme Animations */
+@keyframes neon-glow {
+  0% { 
+    box-shadow: var(--frame-shadow);
+    filter: hue-rotate(0deg);
+  }
+  100% { 
+    box-shadow: var(--frame-shadow), 0 0 60px var(--primary-color);
+    filter: hue-rotate(10deg);
+  }
+}
+
+@keyframes cyber-entrance {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(90deg) scale(0.5);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.8;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0deg) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Nature Organic Theme Animations */
+@keyframes nature-breathe {
+  0%, 100% { 
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale(1.02);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes nature-grow {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-10deg);
+    filter: blur(5px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0px);
+  }
+}
+
+/* Minimalist Modern Theme Animations */
+@keyframes minimal-pulse {
+  0%, 100% { 
+    box-shadow: var(--frame-shadow);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: var(--frame-shadow), 0 0 20px rgba(52, 152, 219, 0.2);
+    transform: scale(1.01);
+  }
+}
+
+@keyframes minimal-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Retro Gaming Theme Animations */
+@keyframes retro-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.7; }
+}
+
+@keyframes retro-spawn {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(180deg);
+    filter: pixelate(10px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: pixelate(0px);
+  }
+}
+
+/* Holographic Theme Animations */
+@keyframes holographic-shift {
+  0% {
+    filter: hue-rotate(0deg) saturate(1);
+    background-position: 0% 50%;
+  }
+  25% {
+    filter: hue-rotate(90deg) saturate(1.2);
+    background-position: 100% 50%;
+  }
+  50% {
+    filter: hue-rotate(180deg) saturate(1);
+    background-position: 100% 100%;
+  }
+  75% {
+    filter: hue-rotate(270deg) saturate(1.2);
+    background-position: 0% 100%;
+  }
+  100% {
+    filter: hue-rotate(360deg) saturate(1);
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes holographic-materialize {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(90deg) scale(0.5);
+    filter: blur(20px) hue-rotate(0deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: perspective(1000px) rotateY(45deg) scale(0.8);
+    filter: blur(5px) hue-rotate(180deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0deg) scale(1);
+    filter: blur(0px) hue-rotate(360deg);
+  }
+}
+
+/* Hover effects for interactive elements */
+.interactive-element {
+  transition: all var(--transition-fast) ease-out;
+  cursor: pointer;
+}
+
+.interactive-element:hover {
+  transform: translateY(-2px) scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Theme selector styles */
+.theme-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 60;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 300px;
+}
+
+.theme-button {
+  width: 50px;
+  height: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-fast) ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-button:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.theme-button.active {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 20px var(--accent-color);
+}
+
+.theme-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transition: opacity var(--transition-fast) ease-out;
+}
+
+/* Individual theme button backgrounds */
+.theme-button[data-theme="neon-cyber"]::before {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 50%, #000a1a 100%);
+}
+
+.theme-button[data-theme="nature-organic"]::before {
+  background: linear-gradient(135deg, #f0f8e8 0%, #e8f5e8 30%, #d4f1d4 70%, #c8e6c8 100%);
+}
+
+.theme-button[data-theme="minimalist-modern"]::before {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%);
+}
+
+.theme-button[data-theme="retro-gaming"]::before {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.theme-button[data-theme="holographic"]::before {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+}
+
+/* Loading animation */
+@keyframes loading-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading {
+  animation: loading-spin 1s linear infinite;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+  .theme-selector {
+    top: 10px;
+    right: 10px;
+    max-width: 200px;
+  }
+  
+  .theme-button {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .fixed-frame .frame-name {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+  }
+}
+
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .fixed-frame .frame-container {
+    border-width: 3px;
+    background: rgba(0, 0, 0, 0.8);
+  }
+  
+  .fixed-frame .frame-name {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+  }
+}
+/* A
+dditional utility animations */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+}
+
+/* Enhanced button styles */
+button#downloadBtn {
+  background: var(--background-gradient);
+  color: var(--text-color);
+  border: var(--frame-border);
+  border-radius: 8px;
+  padding: 0.8rem 2.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--frame-shadow);
+  transition: all var(--transition-fast) ease-out;
+  font-family: var(--font-family);
+  text-shadow: var(--text-shadow);
+}
+
+button#downloadBtn:hover {
+  transform: translateY(-2px) scale(1.03);
+  filter: brightness(1.1);
+}
+
+button#downloadBtn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Input field enhancements */
+input[type="text"] {
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: var(--frame-border);
+  font-size: 1.1rem;
+  outline: none;
+  transition: all var(--transition-fast) ease-out;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: var(--text-color);
+  font-family: var(--font-family);
+}
+
+input[type="text"]:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.bottom-controls input[type="text"] {
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  min-width: 260px;
 }
